@@ -12,10 +12,9 @@ services:
       - redis
     environment:
       WEB_DOCUMENT_ROOT: /app/web
-      VIRTUAL_HOST: packages.iamastupid.com
-      LETSENCRYPT_HOST: packages.iamastupid.com
+      VIRTUAL_HOST:
+      LETSENCRYPT_HOST:
       # LETSENCRYPT_EMAIL:
-
   redis:
     container_name: redis
     image: redis:3.2
