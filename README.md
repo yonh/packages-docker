@@ -31,5 +31,6 @@ cd /app
 composer install --no-dev
 bin/console orm:schema-tool:create
 bin/console resque:worker:start
+bin/console satis:build
 chown application.application . -R
 ```
