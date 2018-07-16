@@ -1,0 +1,12 @@
+#!/usr/bin/env php
+<?php
+
+require __DIR__.'/../vendor/autoload.php';
+
+use Terramar\Packages\Console\Application;
+
+$kernel = new Terramar\Packages\Application('dev', true);
+$kernel->boot();
+
+$application = new Application($kernel);
+$application->run();

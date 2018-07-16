@@ -1,0 +1,97 @@
+{% extends 'base.html.twig' %}
+
+{% block title 'Edit Package' %}
+
+{% block alt_title 'Edit an existing package' %}
+
+{% block content %}
+<form action="{{ path('manage_package_update', { id: package.id }) }}" method="post">
+<div class="row">
+    <div class="col-xs-12 col-sm-8 col-md-3">
+        <div class="box box-success">
+            <div class="box-header">
+                <h3 class="box-title">Package Information</h3>
+                <a href="#" id="whats-this-link" class="pull-right btn-link btn whats-this-link">What's this? &nbsp; <i class="fa fa-question-circle"></i></a>
+            </div>
+
+            <div class="box-body">
+                <div class="form-group" id="whats-this-text" style="display: none">
+                    <div class="callout callout-info">
+                        <p>A Package is a single project hosted in a remote source code repository.</p>
+                        <p>When a Package is enabled, Packages will add a webhook configured to fire when code is pushed to the repository. When a webhook fires, Packages will run any configured plugins for that repository.</p>
+                        <p><a href="http://docs.terramarlabs.com/packages/3.2" target="_blank">Take me to the docs!</a></p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" name="name" value="{{ package.name }}" placeholder="Enter name" id="name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea name="description" placeholder="Enter description" id="description" class="form-control">{{ package.description }}</textarea>
+                </div>
+                <div class="form-group">
+                    <label for="enabled">
+                        <input type="checkbox" name="enabled" value="1" {% if package.enabled %}checked="checked" {% endif %}id="enabled"> &nbsp; Enabled
+                    </label>
+                </div>
+                {% if package.enabled and package.hookExternalId is empty %}
+                <div id="package_error" class="callout callout-danger">
+                    The Package is enabled, but no webhook is installed on the Remote.<br>
+                    <strong>Pushing code will not trigger updates within this application.</strong>
+                </div>
+                {% endif %}
+                <div class="form-group">
+                    <label for="fqn">Fully-qualified Name</label>
+                    <input type="text" name="fqn" value="{{ package.fqn }}" id="fqn" class="form-control" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="configuration_id">Remote Repository</label>
+                    <select class="form-control" name="configuration_id" id="configuration_id" disabled>
+                        <option value="">Select remote</option>
+                      {% for config in remotes %}
+                        <option value="{{ config.id }}"{% if package.remote is sameas(config) %} selected="selected"{% endif %}>{{ config.name }}</option>
+                      {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="box-footer">
+                <button class="btn btn-primary" type="submit">Update Package</button>
+            </div>
+
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-8 col-md-3 plugin-box"{% if not package.enabled %} style="display: none"{% endif %}>
+    {% for controller in plugin_controllers(constant('Terramar\\Packages\\Plugin\\Actions::PACKAGE_EDIT'), { id: package.id }) %}
+        {{ render(controller) }}
+        {% if loop.index % 2 == 0 %}
+    </div>
+    <div class="col-xs-12 col-sm-8 col-md-3 plugin-box"{% if not package.enabled %} style="display: none"{% endif %}>
+        {% endif %}
+    {% endfor %}
+    </div>
+</div>
+</form>
+{% endblock %}
+
+{% block javascripts %}
+<script type="text/javascript">
+  $(function() {
+    var $plugins = $('.plugin-box');
+    $(document.getElementById('enabled')).change(function() {
+      if ($(this).is(':checked')) {
+        $plugins.fadeIn('fast');
+      } else {
+        $plugins.fadeOut('fast');
+      }
+    });
+    $(document.getElementById('whats-this-link')).on('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      $(document.getElementById('whats-this-text')).slideDown('fast');
+      $(this).hide();
+    })
+  })
+</script>
+{% endblock %}
