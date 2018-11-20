@@ -1,9 +1,9 @@
 # packages-docker
-run `packages3.2.0` with docker
+run  [packages 3.2.0](https://github.com/terramar-labs/packages) with docker
+
+
 
 Dependency:` Docker` and `Docker-compose`
-
-
 
 
 
@@ -12,7 +12,8 @@ for example:
 ```
 ...
     VIRTUAL_HOST: your.domain
-    LETSENCRYPT_HOST: your.domain # if you don't use 443, you can ignore this line
+    # if you don't use 443, you can ignore LETSENCRYPT_HOST
+    LETSENCRYPT_HOST: your.domain
 ...
 ```
 
@@ -32,5 +33,17 @@ composer install --no-dev
 bin/console orm:schema-tool:create
 bin/console resque:worker:start
 bin/console satis:build
+chown application.application . -R
+```
+
+
+
+#### redeploy
+
+```shell
+docker-compose down
+docker-compose up -d
+docker exec -it packages bash
+bin/console resque:worker:start
 chown application.application . -R
 ```
