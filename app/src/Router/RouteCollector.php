@@ -38,7 +38,7 @@ class RouteCollector extends BaseCollector
         $this->map('/logout', 'logout', '');
 
         $this->map('/webhook/{id}/receive', 'webhook_receive',
-            'Terramar\Packages\Controller\WebHookController::receiveAction', ['POST']);
+            'Terramar\Packages\Controller\WebHookController::receiveAction', ['POST','GET']);
 
         $this->map('/manage', 'manage', 'Terramar\Packages\Controller\ManageController::indexAction');
 
